@@ -183,9 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
             target.href.includes('whatsapp.com')
         );
 
-        // Verifica se é um botão HTML ou possui alguma classe de estilização de botão do site
+        // Verifica se é um botão HTML ou possui alguma classe de estilização de botão do site, incluindo a classe padrão 'elementor-button'
         const ehBotao = target.tagName === 'BUTTON' || 
             target.classList.contains('btn') || 
+            target.classList.contains('elementor-button') || 
             target.classList.contains('btn-mapa') || 
             target.classList.contains('whats-btn-flutuante') || 
             target.classList.contains('btn-popup-iniciar');
