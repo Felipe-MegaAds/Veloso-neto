@@ -163,4 +163,53 @@ document.addEventListener('DOMContentLoaded', () => {
             popupChat.classList.remove('ativo');
         }
     });
+
+    /* -----------------------------------------
+       6. METRIFICAÇÃO E RASTREAMENTO DE CLIQUES (GTM dataLayer)
+       Este listener monitora cliques na página inteira e, caso o elemento clicado
+       seja um botão (button), um link com classes de botão (.btn, .btn-mapa, etc.)
+       ou qualquer link contendo o domínio do WhatsApp (wa.me, api.whatsapp.com),
+       envia um evento personalizado de clique para o dataLayer do Google Tag Manager.
+       ----------------------------------------- */
+    document.addEventListener('click', (evento) => {
+        // Encontra o elemento 'a' ou 'button' mais próximo ao clique do usuário
+        const target = evento.target.closest('a, button');
+        if (!target) return;
+
+        // Verifica se é um link direcionando para o WhatsApp
+        const ehWhatsApp = target.href && (
+            target.href.includes('wa.me') || 
+            target.href.includes('api.whatsapp.com') || 
+            target.href.includes('whatsapp.com')
+        );
+
+        // Verifica se é um botão HTML ou possui alguma classe de estilização de botão do site
+        const ehBotao = target.tagName === 'BUTTON' || 
+            target.classList.contains('btn') || 
+            target.classList.contains('btn-mapa') || 
+            target.classList.contains('whats-btn-flutuante') || 
+            target.classList.contains('btn-popup-iniciar');
+
+        // Se corresponder a um botão ou WhatsApp, envia as métricas para o dataLayer
+        if (ehWhatsApp || ehBotao) {
+            // Captura as propriedades do botão para o GTM
+            const textoBotao = target.innerText ? target.innerText.trim() : (target.getAttribute('aria-label') || 'Sem texto');
+            const idBotao = target.id || 'Sem ID';
+            const classeBotao = target.className || 'Sem classe';
+            const linkDestino = target.href || 'Sem link';
+
+            // Garante a existência do dataLayer global
+            window.dataLayer = window.dataLayer || [];
+            
+            // Registra o evento personalizado de clique do botão
+            window.dataLayer.push({
+                'event': 'clique_botao',
+                'botao_texto': textoBotao,
+                'botao_id': idBotao,
+                'botao_classe': classeBotao,
+                'botao_url': linkDestino,
+                'whatsapp_click': ehWhatsApp ? 'sim' : 'nao'
+            });
+        }
+    });
 });
