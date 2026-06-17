@@ -1751,3 +1751,12 @@ a.contato-valor:hover {
         right: 20px;
     }
 }
+
+/* 
+Garante que cliques em elementos internos de botões (como spans ou svgs) 
+atinjam diretamente o botão/link pai (que tem a classe elementor-button).
+Isso otimiza o rastreamento e metrificação de eventos do GTM de forma robusta.
+*/
+.elementor-button * {
+    pointer-events: none;
+}
